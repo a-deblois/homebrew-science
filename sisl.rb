@@ -7,8 +7,6 @@ class Sisl < Formula
 
   head "https://github.com/SINTEF-Geometry/SISL.git", :branch => "master"
 
-  option "with-docs-examples", "Build and install html documentation and examples"
-
   depends_on "cmake" => :build
 
   def install
