@@ -23,4 +23,38 @@ class Sisl < Formula
       system "make", "install"
     end
   end
+
+  test do
+    (testpath/"s1013prob.C").write <<-EOS.undent
+
+    #include "sisl.h"
+    #include <iostream>
+
+    using namespace std;
+
+    int main()
+    {
+    int dim = 2;
+    int kind = 1;
+    double coefs[] = { -1, 1, 0, 0, 1, 0, 1, 1 };
+    double knots[] = { 0, 0, 0, 0, 1, 1, 1, 1 };
+    int num = 4;
+    int order = 4;
+    SISLCurve* sc = newCurve(num, order, knots, coefs, kind, dim, 1);
+
+    double itpar;
+    int stat;
+    s1013(sc, 1.0, 0.01, 0.3, &itpar, &stat);
+    double pt[4];
+    int kleft;
+    s1221(sc, 1, itpar, &kleft, pt, &stat);
+
+    cout << itpar << ' ' << pt[2] << ' ' << pt[3] << endl;
+    }
+
+    EOS
+    system ENV.cxx, "s1013prob.C", "-I#{include}", "-L#{lib}",
+                   "-lsisl", "-o", "s1013prob"
+    system "./s1013prob"
+  end
 end
